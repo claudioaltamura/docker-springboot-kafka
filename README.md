@@ -5,7 +5,6 @@
 # docker-springboot-kafka
 spring boot example with docker and kafka
 
-
 ## Building the example
 
 	./gradlew clean build
@@ -14,24 +13,15 @@ or without tests
 
 	./gradle clean bootJar
 
-## Running the example
+## Running the example java -jar 
 
-Run
+Start current kafka docker container
 
-	java -jar build/libs/docker-springboot-kafka-0.1.0.jar
+	docker-compose up -d kafka
 
-	
-docker exec -it docker-springboot-kafka_kafka_1 sh
+Get the current IP address from kafka
 
-docker-compose up -d kafka
-Creating network "docker-springboot-kafka_kafka" with the default driver
-Creating volume "docker-springboot-kafka_kafka_data" with default driver
-Creating docker-springboot-kafka_zookeeper_1 ... done
-Creating docker-springboot-kafka_kafka_1     ... done
-
-docker-compose ps
-
-docker inspect docker-springboot-kafka_kafka_1 | grep IP
+	docker inspect docker-springboot-kafka_kafka_1 | grep IP
             "LinkLocalIPv6Address": "",
             "LinkLocalIPv6PrefixLen": 0,
             "SecondaryIPAddresses": null,
@@ -48,22 +38,38 @@ docker inspect docker-springboot-kafka_kafka_1 | grep IP
                     "GlobalIPv6Address": "",
                     "GlobalIPv6PrefixLen": 0,
 
-curl http://127.0.0.1:8080/helloworld/manopeter
+Change bootstrap-servers in application.properties
 
-λ docker exec -it docker-springboot-kafka_kafka_1 bash
-                    bash-4.4# 
+	spring.kafka.bootstrap-servers=192.168.144.3:9092
 
-                    bash-4.4# /opt/kafka/bin/kafka-console-consumer.sh     --bootstrap-server localhost:9092     --topic helloworld  --from-beginning
+Build the example
+
+	./gradle clean bootJar
+
+Run
+
+	java -jar build/libs/docker-springboot-kafka-0.1.0.jar
+
+Test
+
+	curl http://127.0.0.1:8080/helloworld
+	
+
+Enter Kafka container	
+
+	docker exec -it docker-springboot-kafka_kafka_1 bash
+ 
+Consume message with kafka-consule-consumer.sh
+ 
+    bash-4.4# /opt/kafka/bin/kafka-console-consumer.sh     --bootstrap-server localhost:9092     --topic helloworld  --from-beginning
                     {"timestamp":0,"message":"Hello World!"}
 
-                    bash-4.4# $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $KAFKA_ZOOKEEPER_CONNECT
+Some other basic admin commands
+
+    bash-4.4# $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $KAFKA_ZOOKEEPER_CONNECT
                     __consumer_offsets
                     helloworld
 
-                    bash-4.4# $KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper $KAFKA_ZOOKEEPER_CONNECT --topic helloworld
+    bash-4.4# $KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper $KAFKA_ZOOKEEPER_CONNECT --topic helloworld
                     Topic:helloworld        PartitionCount:1        ReplicationFactor:1     Configs:
                             Topic: helloworld       Partition: 0    Leader: 1001    Replicas: 1001  Isr: 1001
-                    bash-4.4#
-                    	
-	
-	
