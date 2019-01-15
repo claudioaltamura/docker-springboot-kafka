@@ -73,3 +73,22 @@ Some other basic admin commands
     bash-4.4# $KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper $KAFKA_ZOOKEEPER_CONNECT --topic helloworld
                     Topic:helloworld        PartitionCount:1        ReplicationFactor:1     Configs:
                             Topic: helloworld       Partition: 0    Leader: 1001    Replicas: 1001  Isr: 1001
+
+                         
+## Running the example with docker-compose
+
+Build
+
+	./docker-compose -f docker-compose.yml build
+
+Run
+
+	docker-compose up -d 
+	
+
+
+Check the running docker container
+
+	docker-compose ps
+
+                            
